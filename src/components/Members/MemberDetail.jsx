@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { ArrowLeft, UserMinus, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, UserMinus, RefreshCcw, Edit } from 'lucide-react';
 import Modal from '../Common/Modal';
 import MemberMovement from './MemberMovement';
+import MemberForm from './MemberForm';
 
 export default function MemberDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getMemberById, getTeamById, getPillarById, offboardMember } = useData();
   const [isMovementModalOpen, setIsMovementModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const member = getMemberById(id);
   const team = getTeamById(member?.teamId);
@@ -49,13 +51,22 @@ export default function MemberDetail() {
             <h1 className="text-3xl font-bold text-gray-900">{member.name}</h1>
             <p className="text-gray-500 mt-1">{member.email}</p>
           </div>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            member.status === 'active' ? 'bg-green-100 text-green-800' :
-            member.status === 'onboarding' ? 'bg-orange-100 text-orange-800' :
-            'bg-red-100 text-red-800'
-          }`}>
-            {member.status}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              member.status === 'active' ? 'bg-green-100 text-green-800' :
+              member.status === 'onboarding' ? 'bg-orange-100 text-orange-800' :
+              'bg-red-100 text-red-800'
+            }`}>
+              {member.status}
+            </span>
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="btn-primary flex items-center gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit Member
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -124,6 +135,14 @@ export default function MemberDetail() {
         title="Move Team Member"
       >
         <MemberMovement member={member} onClose={() => setIsMovementModalOpen(false)} />
+      </Modal>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Member"
+      >
+        <MemberForm member={member} onClose={() => setIsEditModalOpen(false)} />
       </Modal>
     </div>
   );
