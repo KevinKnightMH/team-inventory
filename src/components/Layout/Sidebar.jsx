@@ -23,7 +23,7 @@ const navItems = [
 export default function Sidebar() {
   return (
     <aside className="w-64 bg-pink-50 text-gray-900 min-h-screen">
-      <div className="p-6 border-b border-pink-200">
+      <div className="p-6">
         <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
       </div>
       <nav className="p-4 space-y-2">
