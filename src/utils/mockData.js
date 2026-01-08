@@ -51,10 +51,10 @@ export function generateMockData() {
       productLead: teamMembers[8].id, // Jennifer Lee
       deliveryOpsLead: teamMembers[15].id, // Tom Harris
       teams: [],
-      slackChannel: 'https://company.slack.com/archives/platform-eng',
-      googleDrive: 'https://drive.google.com/drive/folders/platform-engineering',
-      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/PLATFORM',
-      jiraSpace: 'https://company.atlassian.net/browse/PLAT'
+      slackChannel: 'https://app.slack.com/client/T01234ABC/C05PLATFORM',
+      googleDrive: 'https://drive.google.com/drive/folders/1aBcDefGhIjKlMnOpQrStUvWxYz-Platform',
+      confluenceSpace: 'https://yourcompany.atlassian.net/wiki/spaces/PLATFORM/overview',
+      jiraSpace: 'https://yourcompany.atlassian.net/jira/software/c/projects/PLAT/boards/1'
     },
     {
       id: generateId(),
@@ -93,10 +93,10 @@ export function generateMockData() {
       productManager: teamMembers[8].id,
       deliveryLead: teamMembers[15].id,
       members: [teamMembers[0].id, teamMembers[1].id, teamMembers[2].id],
-      slackChannel: 'https://company.slack.com/archives/team-infrastructure',
-      googleDrive: 'https://drive.google.com/drive/folders/infrastructure-team',
-      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/INFRA',
-      jiraSpace: 'https://company.atlassian.net/browse/INFRA'
+      slackChannel: 'https://app.slack.com/client/T01234ABC/C06INFRASTRUCTURE',
+      googleDrive: 'https://drive.google.com/drive/folders/1XyZ-Infrastructure-Docs-2024',
+      confluenceSpace: 'https://yourcompany.atlassian.net/wiki/spaces/INFRA/pages/12345/Team+Home',
+      jiraSpace: 'https://yourcompany.atlassian.net/jira/software/c/projects/INFRA/boards/5'
     },
     {
       id: generateId(),
