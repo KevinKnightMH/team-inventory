@@ -1,0 +1,94 @@
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useData } from '../../context/DataContext';
+import { ArrowLeft, Users } from 'lucide-react';
+
+export default function TeamDetail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { getTeamById, getPillarById, getMemberById, getMembersByTeam } = useData();
+
+  const team = getTeamById(id);
+  const pillar = getPillarById(team?.pillarId);
+  const members = getMembersByTeam(id);
+
+  if (!team) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Team not found</p>
+        <button onClick={() => navigate('/teams')} className="btn-primary mt-4">
+          Back to Teams
+        </button>
+      </div>
+    );
+  }
+
+  const engMgr = getMemberById(team.engineeringManager);
+  const prodMgr = getMemberById(team.productManager);
+  const delLead = getMemberById(team.deliveryLead);
+
+  return (
+    <div className="space-y-6">
+      <button
+        onClick={() => navigate('/teams')}
+        className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Teams
+      </button>
+
+      <div className="card">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">{team.name}</h1>
+          <p className="text-gray-500 mt-1">
+            Pillar: <Link to={`/pillars/${pillar?.id}`} className="text-blue-600 hover:underline">{pillar?.name}</Link>
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Engineering Manager</p>
+            <p className="text-lg text-gray-900">{engMgr?.name || 'Not assigned'}</p>
+            {engMgr && <p className="text-sm text-gray-500">{engMgr.email}</p>}
+          </div>
+
+          <div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Product Manager</p>
+            <p className="text-lg text-gray-900">{prodMgr?.name || 'Not assigned'}</p>
+            {prodMgr && <p className="text-sm text-gray-500">{prodMgr.email}</p>}
+          </div>
+
+          <div>
+            <p className="text-sm font-medium text-gray-500 mb-1">Delivery Lead</p>
+            <p className="text-lg text-gray-900">{delLead?.name || 'Not assigned'}</p>
+            {delLead && <p className="text-sm text-gray-500">{delLead.email}</p>}
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200 pt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="w-5 h-5 text-gray-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Team Members ({members.length})</h2>
+          </div>
+
+          {members.length === 0 ? (
+            <p className="text-gray-500">No members in this team</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {members.map(member => (
+                <Link
+                  key={member.id}
+                  to={`/members/${member.id}`}
+                  className="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
+                >
+                  <h3 className="font-medium text-gray-900">{member.name}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{member.email}</p>
+                  <p className="text-sm text-gray-600 mt-1 capitalize">{member.role}</p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
