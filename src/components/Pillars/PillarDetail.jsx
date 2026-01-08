@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { ArrowLeft, Users, Briefcase, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink, Edit } from 'lucide-react';
+import { ArrowLeft, Users, Briefcase, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink, Edit, Plus } from 'lucide-react';
 import Modal from '../Common/Modal';
 import PillarForm from './PillarForm';
+import TeamForm from '../Teams/TeamForm';
 
 export default function PillarDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPillarById, getTeamsByPillar, getMemberById } = useData();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddTeamModalOpen, setIsAddTeamModalOpen] = useState(false);
 
   const pillar = getPillarById(id);
   const teams = getTeamsByPillar(id);
@@ -142,13 +144,31 @@ export default function PillarDetail() {
         </div>
 
         <div className="border-t border-gray-200 pt-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Briefcase className="w-5 h-5 text-gray-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Teams ({teams.length})</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-gray-600" />
+              <h2 className="text-xl font-semibold text-gray-900">Teams ({teams.length})</h2>
+            </div>
+            <button
+              onClick={() => setIsAddTeamModalOpen(true)}
+              className="btn-primary flex items-center gap-2 text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add Team
+            </button>
           </div>
 
           {teams.length === 0 ? (
-            <p className="text-gray-500">No teams in this pillar</p>
+            <div className="text-center py-8">
+              <p className="text-gray-500 mb-4">No teams in this pillar yet</p>
+              <button
+                onClick={() => setIsAddTeamModalOpen(true)}
+                className="btn-primary flex items-center gap-2 mx-auto"
+              >
+                <Plus className="w-4 h-4" />
+                Add First Team
+              </button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {teams.map(team => (
@@ -174,6 +194,17 @@ export default function PillarDetail() {
         title="Edit Pillar"
       >
         <PillarForm pillar={pillar} onClose={() => setIsEditModalOpen(false)} />
+      </Modal>
+
+      <Modal
+        isOpen={isAddTeamModalOpen}
+        onClose={() => setIsAddTeamModalOpen(false)}
+        title="Add New Team"
+      >
+        <TeamForm
+          team={{ pillarId: pillar?.id }}
+          onClose={() => setIsAddTeamModalOpen(false)}
+        />
       </Modal>
     </div>
   );
