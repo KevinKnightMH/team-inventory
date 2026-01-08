@@ -6,7 +6,7 @@ class DataService {
   }
 
   // Log audit entry
-  logAudit(data, action, entityType, entityId, entityName, user, details = {}) {
+  logAudit(data, action, entityType, entityId, entityName, user, oldValue = null, newValue = null, details = {}) {
     if (!data.auditLogs) {
       data.auditLogs = [];
     }
@@ -21,6 +21,8 @@ class DataService {
       userId: user?.id || 'system',
       userName: user?.name || 'System',
       userEmail: user?.email || 'system@company.com',
+      changedFrom: oldValue,
+      changedTo: newValue,
       details
     };
 

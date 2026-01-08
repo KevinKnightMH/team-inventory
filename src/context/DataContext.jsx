@@ -51,15 +51,17 @@ export function DataProvider({ children }) {
   // Pillar operations
   const createPillar = (pillar) => {
     const newPillar = dataService.createPillar(data, pillar);
-    dataService.logAudit(data, 'create', 'pillar', newPillar.id, newPillar.name, user);
+    dataService.logAudit(data, 'create', 'pillar', newPillar.id, newPillar.name, user, null, JSON.stringify(newPillar));
     refreshData();
     return newPillar;
   };
 
   const updatePillar = (pillarId, updates) => {
     const pillar = data.pillars.find(p => p.id === pillarId);
+    const oldValue = JSON.stringify(pillar);
     const updated = dataService.updatePillar(data, pillarId, updates);
-    dataService.logAudit(data, 'update', 'pillar', pillarId, pillar?.name || 'Unknown', user, { updates });
+    const newValue = JSON.stringify(updated);
+    dataService.logAudit(data, 'update', 'pillar', pillarId, pillar?.name || 'Unknown', user, oldValue, newValue);
     refreshData();
     return updated;
   };
@@ -67,8 +69,9 @@ export function DataProvider({ children }) {
   const deletePillar = (pillarId) => {
     try {
       const pillar = data.pillars.find(p => p.id === pillarId);
+      const oldValue = JSON.stringify(pillar);
       dataService.deletePillar(data, pillarId);
-      dataService.logAudit(data, 'delete', 'pillar', pillarId, pillar?.name || 'Unknown', user);
+      dataService.logAudit(data, 'delete', 'pillar', pillarId, pillar?.name || 'Unknown', user, oldValue, null);
       refreshData();
       return { success: true };
     } catch (error) {
@@ -79,15 +82,17 @@ export function DataProvider({ children }) {
   // Team operations
   const createTeam = (team) => {
     const newTeam = dataService.createTeam(data, team);
-    dataService.logAudit(data, 'create', 'team', newTeam.id, newTeam.name, user);
+    dataService.logAudit(data, 'create', 'team', newTeam.id, newTeam.name, user, null, JSON.stringify(newTeam));
     refreshData();
     return newTeam;
   };
 
   const updateTeam = (teamId, updates) => {
     const team = data.teams.find(t => t.id === teamId);
+    const oldValue = JSON.stringify(team);
     const updated = dataService.updateTeam(data, teamId, updates);
-    dataService.logAudit(data, 'update', 'team', teamId, team?.name || 'Unknown', user, { updates });
+    const newValue = JSON.stringify(updated);
+    dataService.logAudit(data, 'update', 'team', teamId, team?.name || 'Unknown', user, oldValue, newValue);
     refreshData();
     return updated;
   };
@@ -95,8 +100,9 @@ export function DataProvider({ children }) {
   const deleteTeam = (teamId) => {
     try {
       const team = data.teams.find(t => t.id === teamId);
+      const oldValue = JSON.stringify(team);
       dataService.deleteTeam(data, teamId);
-      dataService.logAudit(data, 'delete', 'team', teamId, team?.name || 'Unknown', user);
+      dataService.logAudit(data, 'delete', 'team', teamId, team?.name || 'Unknown', user, oldValue, null);
       refreshData();
       return { success: true };
     } catch (error) {
@@ -107,34 +113,39 @@ export function DataProvider({ children }) {
   // Team Member operations
   const createMember = (member) => {
     const newMember = dataService.createMember(data, member);
-    dataService.logAudit(data, 'create', 'member', newMember.id, newMember.name, user);
+    dataService.logAudit(data, 'create', 'member', newMember.id, newMember.name, user, null, JSON.stringify(newMember));
     refreshData();
     return newMember;
   };
 
   const updateMember = (memberId, updates) => {
     const member = data.teamMembers.find(m => m.id === memberId);
+    const oldValue = JSON.stringify(member);
     const updated = dataService.updateMember(data, memberId, updates);
-    dataService.logAudit(data, 'update', 'member', memberId, member?.name || 'Unknown', user, { updates });
+    const newValue = JSON.stringify(updated);
+    dataService.logAudit(data, 'update', 'member', memberId, member?.name || 'Unknown', user, oldValue, newValue);
     refreshData();
     return updated;
   };
 
   const deleteMember = (memberId) => {
     const member = data.teamMembers.find(m => m.id === memberId);
+    const oldValue = JSON.stringify(member);
     dataService.deleteMember(data, memberId);
-    dataService.logAudit(data, 'delete', 'member', memberId, member?.name || 'Unknown', user);
+    dataService.logAudit(data, 'delete', 'member', memberId, member?.name || 'Unknown', user, oldValue, null);
     refreshData();
     return { success: true };
   };
 
   const moveMember = (memberId, newTeamId) => {
     const member = data.teamMembers.find(m => m.id === memberId);
+    const oldTeam = data.teams.find(t => t.id === member?.teamId);
     const newTeam = data.teams.find(t => t.id === newTeamId);
     const updated = dataService.moveMember(data, memberId, newTeamId);
-    dataService.logAudit(data, 'move', 'member', memberId, member?.name || 'Unknown', user, {
-      toTeam: newTeam?.name
-    });
+    dataService.logAudit(data, 'move', 'member', memberId, member?.name || 'Unknown', user,
+      oldTeam?.name || 'Unassigned',
+      newTeam?.name || 'Unassigned'
+    );
     refreshData();
     return updated;
   };
@@ -142,15 +153,16 @@ export function DataProvider({ children }) {
   const offboardMember = (memberId) => {
     const member = data.teamMembers.find(m => m.id === memberId);
     const result = dataService.offboardMember(data, memberId);
-    dataService.logAudit(data, 'offboard', 'member', memberId, member?.name || 'Unknown', user);
+    dataService.logAudit(data, 'offboard', 'member', memberId, member?.name || 'Unknown', user, 'active', 'offboarding');
     refreshData();
     return result;
   };
 
   const completeOffboarding = (memberId) => {
     const member = data.teamMembers.find(m => m.id === memberId);
+    const oldValue = JSON.stringify(member);
     const result = dataService.completeOffboarding(data, memberId);
-    dataService.logAudit(data, 'complete_offboard', 'member', memberId, member?.name || 'Unknown', user);
+    dataService.logAudit(data, 'complete_offboard', 'member', memberId, member?.name || 'Unknown', user, oldValue, 'Removed');
     refreshData();
     return result;
   };
@@ -158,7 +170,7 @@ export function DataProvider({ children }) {
   const completeOnboarding = (memberId) => {
     const member = data.teamMembers.find(m => m.id === memberId);
     const result = dataService.completeOnboarding(data, memberId);
-    dataService.logAudit(data, 'complete_onboard', 'member', memberId, member?.name || 'Unknown', user);
+    dataService.logAudit(data, 'complete_onboard', 'member', memberId, member?.name || 'Unknown', user, 'onboarding', 'active');
     refreshData();
     return result;
   };
@@ -166,23 +178,26 @@ export function DataProvider({ children }) {
   // Open Role operations
   const createOpenRole = (openRole) => {
     const newRole = dataService.createOpenRole(data, openRole);
-    dataService.logAudit(data, 'create', 'openRole', newRole.id, newRole.title, user);
+    dataService.logAudit(data, 'create', 'openRole', newRole.id, newRole.title, user, null, JSON.stringify(newRole));
     refreshData();
     return newRole;
   };
 
   const updateOpenRole = (roleId, updates) => {
     const role = data.openRoles.find(r => r.id === roleId);
+    const oldValue = JSON.stringify(role);
     const updated = dataService.updateOpenRole(data, roleId, updates);
-    dataService.logAudit(data, 'update', 'openRole', roleId, role?.title || 'Unknown', user, { updates });
+    const newValue = JSON.stringify(updated);
+    dataService.logAudit(data, 'update', 'openRole', roleId, role?.title || 'Unknown', user, oldValue, newValue);
     refreshData();
     return updated;
   };
 
   const deleteOpenRole = (roleId) => {
     const role = data.openRoles.find(r => r.id === roleId);
+    const oldValue = JSON.stringify(role);
     dataService.deleteOpenRole(data, roleId);
-    dataService.logAudit(data, 'delete', 'openRole', roleId, role?.title || 'Unknown', user);
+    dataService.logAudit(data, 'delete', 'openRole', roleId, role?.title || 'Unknown', user, oldValue, null);
     refreshData();
     return { success: true };
   };

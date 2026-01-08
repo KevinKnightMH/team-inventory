@@ -102,9 +102,10 @@ export default function ReportingDashboard() {
           action: log.action,
           entityType: log.entityType,
           entityName: log.entityName,
+          changedFrom: log.changedFrom || '-',
+          changedTo: log.changedTo || '-',
           user: log.userName,
-          userEmail: log.userEmail,
-          details: log.details ? JSON.stringify(log.details) : ''
+          userEmail: log.userEmail
         }))
     }
   };
