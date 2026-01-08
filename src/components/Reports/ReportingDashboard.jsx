@@ -91,6 +91,21 @@ export default function ReportingDashboard() {
         offboardingCount: data.teamMembers.filter(m => m.role === role && m.status === 'offboarding').length,
         totalCount: data.teamMembers.filter(m => m.role === role).length
       }))
+    },
+    audit: {
+      name: 'Audit Log',
+      description: 'All changes made to the system with user information',
+      data: (data.auditLogs || [])
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .map(log => ({
+          timestamp: new Date(log.timestamp).toLocaleString(),
+          action: log.action,
+          entityType: log.entityType,
+          entityName: log.entityName,
+          user: log.userName,
+          userEmail: log.userEmail,
+          details: log.details ? JSON.stringify(log.details) : ''
+        }))
     }
   };
 

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { generateMockData } from '../utils/mockData';
 import dataService from '../services/dataService';
+import { useAuth } from './AuthContext';
 
 const DataContext = createContext();
 
@@ -13,11 +14,13 @@ export function useData() {
 }
 
 export function DataProvider({ children }) {
+  const { user } = useAuth();
   const [data, setData] = useState({
     pillars: [],
     teams: [],
     teamMembers: [],
-    openRoles: []
+    openRoles: [],
+    auditLogs: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -48,19 +51,24 @@ export function DataProvider({ children }) {
   // Pillar operations
   const createPillar = (pillar) => {
     const newPillar = dataService.createPillar(data, pillar);
+    dataService.logAudit(data, 'create', 'pillar', newPillar.id, newPillar.name, user);
     refreshData();
     return newPillar;
   };
 
   const updatePillar = (pillarId, updates) => {
+    const pillar = data.pillars.find(p => p.id === pillarId);
     const updated = dataService.updatePillar(data, pillarId, updates);
+    dataService.logAudit(data, 'update', 'pillar', pillarId, pillar?.name || 'Unknown', user, { updates });
     refreshData();
     return updated;
   };
 
   const deletePillar = (pillarId) => {
     try {
+      const pillar = data.pillars.find(p => p.id === pillarId);
       dataService.deletePillar(data, pillarId);
+      dataService.logAudit(data, 'delete', 'pillar', pillarId, pillar?.name || 'Unknown', user);
       refreshData();
       return { success: true };
     } catch (error) {
@@ -71,19 +79,24 @@ export function DataProvider({ children }) {
   // Team operations
   const createTeam = (team) => {
     const newTeam = dataService.createTeam(data, team);
+    dataService.logAudit(data, 'create', 'team', newTeam.id, newTeam.name, user);
     refreshData();
     return newTeam;
   };
 
   const updateTeam = (teamId, updates) => {
+    const team = data.teams.find(t => t.id === teamId);
     const updated = dataService.updateTeam(data, teamId, updates);
+    dataService.logAudit(data, 'update', 'team', teamId, team?.name || 'Unknown', user, { updates });
     refreshData();
     return updated;
   };
 
   const deleteTeam = (teamId) => {
     try {
+      const team = data.teams.find(t => t.id === teamId);
       dataService.deleteTeam(data, teamId);
+      dataService.logAudit(data, 'delete', 'team', teamId, team?.name || 'Unknown', user);
       refreshData();
       return { success: true };
     } catch (error) {
@@ -94,42 +107,58 @@ export function DataProvider({ children }) {
   // Team Member operations
   const createMember = (member) => {
     const newMember = dataService.createMember(data, member);
+    dataService.logAudit(data, 'create', 'member', newMember.id, newMember.name, user);
     refreshData();
     return newMember;
   };
 
   const updateMember = (memberId, updates) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
     const updated = dataService.updateMember(data, memberId, updates);
+    dataService.logAudit(data, 'update', 'member', memberId, member?.name || 'Unknown', user, { updates });
     refreshData();
     return updated;
   };
 
   const deleteMember = (memberId) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
     dataService.deleteMember(data, memberId);
+    dataService.logAudit(data, 'delete', 'member', memberId, member?.name || 'Unknown', user);
     refreshData();
     return { success: true };
   };
 
   const moveMember = (memberId, newTeamId) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
+    const newTeam = data.teams.find(t => t.id === newTeamId);
     const updated = dataService.moveMember(data, memberId, newTeamId);
+    dataService.logAudit(data, 'move', 'member', memberId, member?.name || 'Unknown', user, {
+      toTeam: newTeam?.name
+    });
     refreshData();
     return updated;
   };
 
   const offboardMember = (memberId) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
     const result = dataService.offboardMember(data, memberId);
+    dataService.logAudit(data, 'offboard', 'member', memberId, member?.name || 'Unknown', user);
     refreshData();
     return result;
   };
 
   const completeOffboarding = (memberId) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
     const result = dataService.completeOffboarding(data, memberId);
+    dataService.logAudit(data, 'complete_offboard', 'member', memberId, member?.name || 'Unknown', user);
     refreshData();
     return result;
   };
 
   const completeOnboarding = (memberId) => {
+    const member = data.teamMembers.find(m => m.id === memberId);
     const result = dataService.completeOnboarding(data, memberId);
+    dataService.logAudit(data, 'complete_onboard', 'member', memberId, member?.name || 'Unknown', user);
     refreshData();
     return result;
   };
@@ -137,18 +166,23 @@ export function DataProvider({ children }) {
   // Open Role operations
   const createOpenRole = (openRole) => {
     const newRole = dataService.createOpenRole(data, openRole);
+    dataService.logAudit(data, 'create', 'openRole', newRole.id, newRole.title, user);
     refreshData();
     return newRole;
   };
 
   const updateOpenRole = (roleId, updates) => {
+    const role = data.openRoles.find(r => r.id === roleId);
     const updated = dataService.updateOpenRole(data, roleId, updates);
+    dataService.logAudit(data, 'update', 'openRole', roleId, role?.title || 'Unknown', user, { updates });
     refreshData();
     return updated;
   };
 
   const deleteOpenRole = (roleId) => {
+    const role = data.openRoles.find(r => r.id === roleId);
     dataService.deleteOpenRole(data, roleId);
+    dataService.logAudit(data, 'delete', 'openRole', roleId, role?.title || 'Unknown', user);
     refreshData();
     return { success: true };
   };

@@ -5,6 +5,30 @@ class DataService {
     this.storageKey = 'team-inventory-data';
   }
 
+  // Log audit entry
+  logAudit(data, action, entityType, entityId, entityName, user, details = {}) {
+    if (!data.auditLogs) {
+      data.auditLogs = [];
+    }
+
+    const auditEntry = {
+      id: generateId(),
+      timestamp: new Date().toISOString(),
+      action, // 'create', 'update', 'delete', 'move', 'offboard', 'onboard'
+      entityType, // 'pillar', 'team', 'member', 'openRole'
+      entityId,
+      entityName,
+      userId: user?.id || 'system',
+      userName: user?.name || 'System',
+      userEmail: user?.email || 'system@company.com',
+      details
+    };
+
+    data.auditLogs.push(auditEntry);
+    this.saveData(data);
+    return auditEntry;
+  }
+
   // Load all data from localStorage
   loadData() {
     try {

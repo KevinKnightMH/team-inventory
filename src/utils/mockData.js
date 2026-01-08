@@ -227,6 +227,7 @@ export function generateMockData() {
     pillars,
     teams,
     teamMembers,
-    openRoles
+    openRoles,
+    auditLogs: []
   };
 }
