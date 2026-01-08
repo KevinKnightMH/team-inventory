@@ -22,8 +22,8 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-gray-900 text-gray-100 min-h-screen">
-      <div className="p-6 border-b border-gray-800">
+    <aside className="w-64 bg-pink-50 text-gray-900 min-h-screen">
+      <div className="p-6 border-b border-pink-200">
         <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
       </div>
       <nav className="p-4 space-y-2">
@@ -37,8 +37,8 @@ export default function Sidebar() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    ? 'bg-pink-600 text-white'
+                    : 'text-gray-700 hover:bg-pink-100 hover:text-gray-900'
                 }`
               }
             >
