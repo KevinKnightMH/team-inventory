@@ -22,10 +22,7 @@ const navItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-pink-50 text-gray-900 min-h-screen">
-      <div className="p-6">
-        <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
-      </div>
+    <aside className="w-64 bg-pink-50 text-gray-900 min-h-screen flex flex-col">
       <nav className="p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -48,6 +45,9 @@ export default function Sidebar() {
           );
         })}
       </nav>
+      <div className="mt-auto p-6">
+        <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
+      </div>
     </aside>
   );
 }
