@@ -123,6 +123,7 @@ export default function Dashboard() {
           value={stats.openRoles}
           icon={BriefcaseIcon}
           color="yellow"
+          link="/reports"
         />
       </div>
 
@@ -150,11 +151,14 @@ export default function Dashboard() {
       {stats.openRoles > 0 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-          <div>
+          <div className="flex-1">
             <h4 className="font-medium text-yellow-900">Open Positions</h4>
             <p className="text-sm text-yellow-700 mt-1">
               There are {stats.openRoles} open position{stats.openRoles !== 1 ? 's' : ''} that need
-              to be filled. Review them in the teams section.
+              to be filled.{' '}
+              <Link to="/reports" className="font-medium text-yellow-900 hover:underline">
+                View Open Positions →
+              </Link>
             </p>
           </div>
         </div>
