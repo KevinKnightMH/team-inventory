@@ -8,6 +8,7 @@ import {
   BarChart3,
   Briefcase
 } from 'lucide-react';
+import logo from '../../assets/dopslogo.png';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', exact: true },
@@ -22,6 +23,9 @@ const navItems = [
 export default function Sidebar() {
   return (
     <aside className="w-64 bg-gray-900 text-gray-100 min-h-screen">
+      <div className="p-6 border-b border-gray-800">
+        <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
+      </div>
       <nav className="p-4 space-y-2">
         {navItems.map((item) => {
           const Icon = item.icon;
