@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { ArrowLeft, Users, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Users, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink, Edit } from 'lucide-react';
+import Modal from '../Common/Modal';
+import TeamForm from './TeamForm';
 
 export default function TeamDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getTeamById, getPillarById, getMemberById, getMembersByTeam } = useData();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const team = getTeamById(id);
   const pillar = getPillarById(team?.pillarId);
@@ -37,11 +41,20 @@ export default function TeamDetail() {
       </button>
 
       <div className="card">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">{team.name}</h1>
-          <p className="text-gray-500 mt-1">
-            Pillar: <Link to={`/pillars/${pillar?.id}`} className="text-blue-600 hover:underline">{pillar?.name}</Link>
-          </p>
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">{team.name}</h1>
+            <p className="text-gray-500 mt-1">
+              Pillar: <Link to={`/pillars/${pillar?.id}`} className="text-blue-600 hover:underline">{pillar?.name}</Link>
+            </p>
+          </div>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Edit className="w-4 h-4" />
+            Edit Team
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -159,6 +172,14 @@ export default function TeamDetail() {
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Team"
+      >
+        <TeamForm team={team} onClose={() => setIsEditModalOpen(false)} />
+      </Modal>
     </div>
   );
 }

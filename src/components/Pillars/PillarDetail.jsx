@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { ArrowLeft, Users, Briefcase, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Users, Briefcase, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink, Edit } from 'lucide-react';
+import Modal from '../Common/Modal';
+import PillarForm from './PillarForm';
 
 export default function PillarDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getPillarById, getTeamsByPillar, getMemberById } = useData();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const pillar = getPillarById(id);
   const teams = getTeamsByPillar(id);
@@ -36,7 +40,16 @@ export default function PillarDetail() {
       </button>
 
       <div className="card">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">{pillar.name}</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">{pillar.name}</h1>
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Edit className="w-4 h-4" />
+            Edit Pillar
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div>
@@ -154,6 +167,14 @@ export default function PillarDetail() {
           )}
         </div>
       </div>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Edit Pillar"
+      >
+        <PillarForm pillar={pillar} onClose={() => setIsEditModalOpen(false)} />
+      </Modal>
     </div>
   );
 }
