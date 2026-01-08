@@ -50,7 +50,11 @@ export function generateMockData() {
       engineeringLead: teamMembers[18].id, // Amanda Foster
       productLead: teamMembers[8].id, // Jennifer Lee
       deliveryOpsLead: teamMembers[15].id, // Tom Harris
-      teams: []
+      teams: [],
+      slackChannel: 'https://company.slack.com/archives/platform-eng',
+      googleDrive: 'https://drive.google.com/drive/folders/platform-engineering',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/PLATFORM',
+      jiraSpace: 'https://company.atlassian.net/browse/PLAT'
     },
     {
       id: generateId(),
@@ -58,7 +62,11 @@ export function generateMockData() {
       engineeringLead: teamMembers[19].id, // Christopher Lee
       productLead: teamMembers[9].id, // Robert Brown
       deliveryOpsLead: teamMembers[16].id, // Rachel Green
-      teams: []
+      teams: [],
+      slackChannel: 'https://company.slack.com/archives/customer-exp',
+      googleDrive: 'https://drive.google.com/drive/folders/customer-experience',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/CX',
+      jiraSpace: 'https://company.atlassian.net/browse/CX'
     },
     {
       id: generateId(),
@@ -66,7 +74,11 @@ export function generateMockData() {
       engineeringLead: teamMembers[20].id, // Diana Martinez
       productLead: teamMembers[10].id, // Maria Garcia
       deliveryOpsLead: teamMembers[17].id, // Marcus Wright
-      teams: []
+      teams: [],
+      slackChannel: 'https://company.slack.com/archives/data-analytics',
+      googleDrive: 'https://drive.google.com/drive/folders/data-analytics',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/DATA',
+      jiraSpace: 'https://company.atlassian.net/browse/DATA'
     }
   ];
 
@@ -80,7 +92,11 @@ export function generateMockData() {
       engineeringManager: teamMembers[18].id,
       productManager: teamMembers[8].id,
       deliveryLead: teamMembers[15].id,
-      members: [teamMembers[0].id, teamMembers[1].id, teamMembers[2].id]
+      members: [teamMembers[0].id, teamMembers[1].id, teamMembers[2].id],
+      slackChannel: 'https://company.slack.com/archives/team-infrastructure',
+      googleDrive: 'https://drive.google.com/drive/folders/infrastructure-team',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/INFRA',
+      jiraSpace: 'https://company.atlassian.net/browse/INFRA'
     },
     {
       id: generateId(),
@@ -89,7 +105,11 @@ export function generateMockData() {
       engineeringManager: teamMembers[18].id,
       productManager: teamMembers[8].id,
       deliveryLead: teamMembers[15].id,
-      members: [teamMembers[3].id, teamMembers[4].id]
+      members: [teamMembers[3].id, teamMembers[4].id],
+      slackChannel: 'https://company.slack.com/archives/team-devtools',
+      googleDrive: 'https://drive.google.com/drive/folders/devtools-team',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/DEVTOOLS',
+      jiraSpace: 'https://company.atlassian.net/browse/DEVTOOLS'
     },
     // Customer Experience teams
     {
@@ -99,7 +119,11 @@ export function generateMockData() {
       engineeringManager: teamMembers[19].id,
       productManager: teamMembers[9].id,
       deliveryLead: teamMembers[16].id,
-      members: [teamMembers[5].id, teamMembers[6].id, teamMembers[12].id, teamMembers[13].id]
+      members: [teamMembers[5].id, teamMembers[6].id, teamMembers[12].id, teamMembers[13].id],
+      slackChannel: 'https://company.slack.com/archives/team-frontend',
+      googleDrive: 'https://drive.google.com/drive/folders/frontend-team',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/FRONTEND',
+      jiraSpace: 'https://company.atlassian.net/browse/FE'
     },
     {
       id: generateId(),
@@ -108,7 +132,11 @@ export function generateMockData() {
       engineeringManager: teamMembers[19].id,
       productManager: teamMembers[9].id,
       deliveryLead: teamMembers[16].id,
-      members: [teamMembers[7].id, teamMembers[14].id]
+      members: [teamMembers[7].id, teamMembers[14].id],
+      slackChannel: 'https://company.slack.com/archives/team-mobile',
+      googleDrive: 'https://drive.google.com/drive/folders/mobile-team',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/MOBILE',
+      jiraSpace: 'https://company.atlassian.net/browse/MOBILE'
     },
     // Data & Analytics teams
     {
@@ -118,7 +146,11 @@ export function generateMockData() {
       engineeringManager: teamMembers[20].id,
       productManager: teamMembers[10].id,
       deliveryLead: teamMembers[17].id,
-      members: []
+      members: [],
+      slackChannel: 'https://company.slack.com/archives/team-dataplatform',
+      googleDrive: 'https://drive.google.com/drive/folders/dataplatform-team',
+      confluenceSpace: 'https://company.atlassian.net/wiki/spaces/DATAPLATFORM',
+      jiraSpace: 'https://company.atlassian.net/browse/DP'
     }
   ];
 

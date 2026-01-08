@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { ArrowLeft, Users } from 'lucide-react';
+import { ArrowLeft, Users, MessageSquare, FolderOpen, FileText, ListTodo, ExternalLink } from 'lucide-react';
 
 export default function TeamDetail() {
   const { id } = useParams();
@@ -61,6 +61,76 @@ export default function TeamDetail() {
             <p className="text-sm font-medium text-gray-500 mb-1">Delivery Lead</p>
             <p className="text-lg text-gray-900">{delLead?.name || 'Not assigned'}</p>
             {delLead && <p className="text-sm text-gray-500">{delLead.email}</p>}
+          </div>
+        </div>
+
+        {/* Collaboration Links Panel */}
+        <div className="border-t border-gray-200 pt-6 pb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Collaboration Links</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {team.slackChannel && (
+              <a
+                href={team.slackChannel}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg hover:shadow-md transition-all group"
+              >
+                <MessageSquare className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">Slack Channel</p>
+                  <p className="text-xs text-gray-600 truncate">Team discussions</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            )}
+
+            {team.googleDrive && (
+              <a
+                href={team.googleDrive}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:shadow-md transition-all group"
+              >
+                <FolderOpen className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">Google Drive</p>
+                  <p className="text-xs text-gray-600 truncate">Documents & files</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            )}
+
+            {team.confluenceSpace && (
+              <a
+                href={team.confluenceSpace}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg hover:shadow-md transition-all group"
+              >
+                <FileText className="w-5 h-5 text-green-600 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">Confluence</p>
+                  <p className="text-xs text-gray-600 truncate">Documentation</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-green-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            )}
+
+            {team.jiraSpace && (
+              <a
+                href={team.jiraSpace}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-lg hover:shadow-md transition-all group"
+              >
+                <ListTodo className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">Jira</p>
+                  <p className="text-xs text-gray-600 truncate">Project tracking</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            )}
           </div>
         </div>
 

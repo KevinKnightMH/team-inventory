@@ -8,7 +8,11 @@ export default function TeamForm({ team, onClose }) {
     pillarId: team?.pillarId || '',
     engineeringManager: team?.engineeringManager || '',
     productManager: team?.productManager || '',
-    deliveryLead: team?.deliveryLead || ''
+    deliveryLead: team?.deliveryLead || '',
+    slackChannel: team?.slackChannel || '',
+    googleDrive: team?.googleDrive || '',
+    confluenceSpace: team?.confluenceSpace || '',
+    jiraSpace: team?.jiraSpace || ''
   });
 
   const handleSubmit = (e) => {
@@ -132,6 +136,72 @@ export default function TeamForm({ team, onClose }) {
               </option>
             ))}
         </select>
+      </div>
+
+      <div className="border-t border-gray-200 pt-4 mt-6">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">Collaboration Links (Optional)</h3>
+
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="slackChannel" className="block text-sm font-medium text-gray-700 mb-2">
+              Slack Channel URL
+            </label>
+            <input
+              id="slackChannel"
+              name="slackChannel"
+              type="url"
+              value={formData.slackChannel}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="https://company.slack.com/archives/..."
+            />
+          </div>
+
+          <div>
+            <label htmlFor="googleDrive" className="block text-sm font-medium text-gray-700 mb-2">
+              Google Drive URL
+            </label>
+            <input
+              id="googleDrive"
+              name="googleDrive"
+              type="url"
+              value={formData.googleDrive}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="https://drive.google.com/drive/folders/..."
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confluenceSpace" className="block text-sm font-medium text-gray-700 mb-2">
+              Confluence Space URL
+            </label>
+            <input
+              id="confluenceSpace"
+              name="confluenceSpace"
+              type="url"
+              value={formData.confluenceSpace}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="https://company.atlassian.net/wiki/spaces/..."
+            />
+          </div>
+
+          <div>
+            <label htmlFor="jiraSpace" className="block text-sm font-medium text-gray-700 mb-2">
+              Jira Space URL
+            </label>
+            <input
+              id="jiraSpace"
+              name="jiraSpace"
+              type="url"
+              value={formData.jiraSpace}
+              onChange={handleChange}
+              className="input-field"
+              placeholder="https://company.atlassian.net/browse/..."
+            />
+          </div>
+        </div>
       </div>
 
       <div className="flex gap-3 justify-end pt-4">
