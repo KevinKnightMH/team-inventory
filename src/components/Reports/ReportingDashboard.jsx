@@ -1,12 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useData } from '../../context/DataContext';
+import { useSearchParams } from 'react-router-dom';
 import { Download, FileText, FileJson } from 'lucide-react';
 import { exportToCSV, exportToJSON } from '../../utils/exportUtils';
 import ExportData from './ExportData';
 
 export default function ReportingDashboard() {
   const { data } = useData();
-  const [selectedReport, setSelectedReport] = useState('members');
+  const [searchParams] = useSearchParams();
+  const reportParam = searchParams.get('report');
+  const [selectedReport, setSelectedReport] = useState(reportParam || 'members');
+
+  useEffect(() => {
+    if (reportParam) {
+      setSelectedReport(reportParam);
+    }
+  }, [reportParam]);
 
   const reports = {
     members: {

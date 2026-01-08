@@ -123,7 +123,7 @@ export default function Dashboard() {
           value={stats.openRoles}
           icon={BriefcaseIcon}
           color="yellow"
-          link="/reports"
+          link="/reports?report=openRoles"
         />
       </div>
 
@@ -156,7 +156,7 @@ export default function Dashboard() {
             <p className="text-sm text-yellow-700 mt-1">
               There are {stats.openRoles} open position{stats.openRoles !== 1 ? 's' : ''} that need
               to be filled.{' '}
-              <Link to="/reports" className="font-medium text-yellow-900 hover:underline">
+              <Link to="/reports?report=openRoles" className="font-medium text-yellow-900 hover:underline">
                 View Open Positions →
               </Link>
             </p>
