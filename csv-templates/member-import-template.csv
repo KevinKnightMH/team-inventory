@@ -1,0 +1,17 @@
+name,email,role,location,team,startDate,status
+Sarah Chen,sarah.chen@company.com,engineering,San Francisco,Infrastructure,2023-01-15,active
+Michael Rodriguez,michael.r@company.com,engineering,Austin,Infrastructure,2023-03-20,active
+Priya Sharma,priya.sharma@company.com,engineering,Remote,Infrastructure,2023-05-10,active
+David Kim,david.kim@company.com,engineering,Seattle,Developer Tools,2023-07-01,active
+Emma Thompson,emma.t@company.com,engineering,New York,Developer Tools,2023-09-15,active
+James Wilson,james.w@company.com,engineering,Boston,Frontend,2024-01-10,active
+Lisa Anderson,lisa.a@company.com,engineering,San Francisco,Frontend,2024-03-01,active
+Alex Martinez,alex.m@company.com,engineering,Denver,Mobile,2024-05-15,active
+Jennifer Lee,jennifer.lee@company.com,product,San Francisco,Infrastructure,2023-02-01,active
+Robert Brown,robert.b@company.com,product,New York,Frontend,2023-04-10,active
+Maria Garcia,maria.g@company.com,product,Austin,Data Platform,2023-08-20,active
+Sophie Taylor,sophie.t@company.com,design,Los Angeles,Frontend,2023-03-15,active
+Daniel Park,daniel.p@company.com,design,Seattle,Mobile,2023-06-01,active
+Tom Harris,tom.h@company.com,delivery,New York,Infrastructure,2023-02-15,active
+Rachel Green,rachel.g@company.com,delivery,Austin,Frontend,2023-07-10,active
+New Hire,newhire@company.com,engineering,San Francisco,Developer Tools,2025-12-15,onboarding

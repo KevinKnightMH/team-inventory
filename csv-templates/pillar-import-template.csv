@@ -1,0 +1,4 @@
+name,engineeringLead,productLead,deliveryOpsLead,slackChannel,googleDrive,confluenceSpace,jiraSpace
+Platform Engineering,amanda.f@company.com,jennifer.lee@company.com,tom.h@company.com,https://company.slack.com/archives/platform-eng,https://drive.google.com/drive/folders/platform-engineering,https://company.atlassian.net/wiki/spaces/PLATFORM,https://company.atlassian.net/browse/PLAT
+Customer Experience,chris.lee@company.com,robert.b@company.com,rachel.g@company.com,https://company.slack.com/archives/customer-exp,https://drive.google.com/drive/folders/customer-experience,https://company.atlassian.net/wiki/spaces/CX,https://company.atlassian.net/browse/CX
+Data & Analytics,diana.m@company.com,maria.g@company.com,marcus.w@company.com,https://company.slack.com/archives/data-analytics,https://drive.google.com/drive/folders/data-analytics,https://company.atlassian.net/wiki/spaces/DATA,https://company.atlassian.net/browse/DATA
