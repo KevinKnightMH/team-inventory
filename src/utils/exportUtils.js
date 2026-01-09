@@ -57,3 +57,97 @@ export function exportToJSON(data, filename) {
 export function generateId() {
   return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
+
+export function parseCSV(csvText) {
+  const lines = csvText.trim().split('\n');
+  if (lines.length < 2) {
+    throw new Error('CSV file must contain at least a header row and one data row');
+  }
+
+  // Parse header
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"(.*)"$/, '$1'));
+
+  // Parse rows
+  const data = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    // Handle quoted values
+    const values = [];
+    let currentValue = '';
+    let inQuotes = false;
+
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        values.push(currentValue.trim().replace(/^"(.*)"$/, '$1'));
+        currentValue = '';
+      } else {
+        currentValue += char;
+      }
+    }
+    values.push(currentValue.trim().replace(/^"(.*)"$/, '$1'));
+
+    // Create object from headers and values
+    const row = {};
+    headers.forEach((header, index) => {
+      row[header] = values[index] || '';
+    });
+    data.push(row);
+  }
+
+  return data;
+}
+
+export function validateMemberCSV(data, teams) {
+  const errors = [];
+  const validRoles = ['engineering', 'product', 'design', 'delivery', 'other'];
+  const validStatuses = ['active', 'onboarding', 'offboarding'];
+
+  data.forEach((row, index) => {
+    const rowNum = index + 2; // +2 because index 0 is row 2 (after header)
+
+    // Required fields
+    if (!row.name || !row.name.trim()) {
+      errors.push(`Row ${rowNum}: Name is required`);
+    }
+    if (!row.email || !row.email.trim()) {
+      errors.push(`Row ${rowNum}: Email is required`);
+    }
+    if (!row.role || !row.role.trim()) {
+      errors.push(`Row ${rowNum}: Role is required`);
+    }
+    if (!row.location || !row.location.trim()) {
+      errors.push(`Row ${rowNum}: Location is required`);
+    }
+
+    // Validate role
+    if (row.role && !validRoles.includes(row.role.toLowerCase())) {
+      errors.push(`Row ${rowNum}: Invalid role "${row.role}". Must be one of: ${validRoles.join(', ')}`);
+    }
+
+    // Validate status (optional, defaults to 'active')
+    if (row.status && !validStatuses.includes(row.status.toLowerCase())) {
+      errors.push(`Row ${rowNum}: Invalid status "${row.status}". Must be one of: ${validStatuses.join(', ')}`);
+    }
+
+    // Validate team (optional)
+    if (row.team && row.team.trim()) {
+      const team = teams.find(t => t.name.toLowerCase() === row.team.toLowerCase());
+      if (!team) {
+        errors.push(`Row ${rowNum}: Team "${row.team}" not found`);
+      }
+    }
+
+    // Validate email format
+    if (row.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) {
+      errors.push(`Row ${rowNum}: Invalid email format "${row.email}"`);
+    }
+  });
+
+  return errors;
+}

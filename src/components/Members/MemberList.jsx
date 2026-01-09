@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Upload } from 'lucide-react';
 import Table from '../Common/Table';
 import Modal from '../Common/Modal';
 import MemberForm from './MemberForm';
 import SearchFilter from '../Common/SearchFilter';
+import { parseCSV, validateMemberCSV } from '../../utils/exportUtils';
 
 export default function MemberList() {
-  const { data, deleteMember, getTeamById, getPillarById } = useData();
+  const { data, deleteMember, getTeamById, getPillarById, createMember } = useData();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [filters, setFilters] = useState({
@@ -18,6 +19,9 @@ export default function MemberList() {
     role: '',
     status: 'active'
   });
+  const [importErrors, setImportErrors] = useState([]);
+  const [importSuccess, setImportSuccess] = useState('');
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleDelete = (memberId) => {
@@ -35,6 +39,72 @@ export default function MemberList() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingMember(null);
+  };
+
+  const handleImportCSV = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setImportErrors([]);
+    setImportSuccess('');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const csvText = e.target.result;
+        const parsedData = parseCSV(csvText);
+
+        // Validate the data
+        const errors = validateMemberCSV(parsedData, data.teams);
+        if (errors.length > 0) {
+          setImportErrors(errors);
+          return;
+        }
+
+        // Import members
+        let importedCount = 0;
+        parsedData.forEach(row => {
+          // Find team by name
+          let teamId = null;
+          let pillarId = null;
+          if (row.team && row.team.trim()) {
+            const team = data.teams.find(t => t.name.toLowerCase() === row.team.toLowerCase());
+            if (team) {
+              teamId = team.id;
+              pillarId = team.pillarId;
+            }
+          }
+
+          const memberData = {
+            name: row.name.trim(),
+            email: row.email.trim(),
+            role: row.role.toLowerCase().trim(),
+            location: row.location.trim(),
+            teamId: teamId,
+            pillarId: pillarId,
+            startDate: row.startDate || new Date().toISOString().split('T')[0],
+            status: (row.status || 'active').toLowerCase().trim()
+          };
+
+          createMember(memberData);
+          importedCount++;
+        });
+
+        setImportSuccess(`Successfully imported ${importedCount} member(s)`);
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } catch (error) {
+        setImportErrors([error.message]);
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  const handleImportButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
   // Filter members
@@ -105,14 +175,53 @@ export default function MemberList() {
           <h2 className="text-2xl font-bold text-gray-900">Members</h2>
           <p className="text-gray-500 mt-1">Manage team members</p>
         </div>
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="btn-primary flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Member
-        </button>
+        <div className="flex gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            onChange={handleImportCSV}
+            className="hidden"
+          />
+          <button
+            onClick={handleImportButtonClick}
+            className="btn-secondary flex items-center gap-2"
+          >
+            <Upload className="w-4 h-4" />
+            Import CSV
+          </button>
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Member
+          </button>
+        </div>
       </div>
+
+      {importSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <p className="text-green-800">{importSuccess}</p>
+        </div>
+      )}
+
+      {importErrors.length > 0 && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <h3 className="font-medium text-red-900 mb-2">Import Errors:</h3>
+          <ul className="list-disc list-inside space-y-1">
+            {importErrors.map((error, index) => (
+              <li key={index} className="text-sm text-red-700">{error}</li>
+            ))}
+          </ul>
+          <p className="text-sm text-red-600 mt-3">
+            CSV Format: name,email,role,location,team,startDate,status
+          </p>
+          <p className="text-sm text-red-600">
+            Example: John Doe,john@company.com,engineering,San Francisco,Infrastructure,2025-01-01,active
+          </p>
+        </div>
+      )}
 
       <div className="card">
         <div className="mb-4 grid grid-cols-1 md:grid-cols-5 gap-4">
