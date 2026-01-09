@@ -151,3 +151,89 @@ export function validateMemberCSV(data, teams) {
 
   return errors;
 }
+
+export function validatePillarCSV(data, teamMembers) {
+  const errors = [];
+
+  data.forEach((row, index) => {
+    const rowNum = index + 2;
+
+    // Required fields
+    if (!row.name || !row.name.trim()) {
+      errors.push(`Row ${rowNum}: Name is required`);
+    }
+
+    // Validate leads (optional but must exist if provided)
+    if (row.engineeringLead && row.engineeringLead.trim()) {
+      const lead = teamMembers.find(m => m.email.toLowerCase() === row.engineeringLead.toLowerCase());
+      if (!lead) {
+        errors.push(`Row ${rowNum}: Engineering Lead "${row.engineeringLead}" not found`);
+      }
+    }
+
+    if (row.productLead && row.productLead.trim()) {
+      const lead = teamMembers.find(m => m.email.toLowerCase() === row.productLead.toLowerCase());
+      if (!lead) {
+        errors.push(`Row ${rowNum}: Product Lead "${row.productLead}" not found`);
+      }
+    }
+
+    if (row.deliveryOpsLead && row.deliveryOpsLead.trim()) {
+      const lead = teamMembers.find(m => m.email.toLowerCase() === row.deliveryOpsLead.toLowerCase());
+      if (!lead) {
+        errors.push(`Row ${rowNum}: Delivery Ops Lead "${row.deliveryOpsLead}" not found`);
+      }
+    }
+  });
+
+  return errors;
+}
+
+export function validateTeamCSV(data, pillars, teamMembers) {
+  const errors = [];
+
+  data.forEach((row, index) => {
+    const rowNum = index + 2;
+
+    // Required fields
+    if (!row.name || !row.name.trim()) {
+      errors.push(`Row ${rowNum}: Name is required`);
+    }
+
+    if (!row.pillar || !row.pillar.trim()) {
+      errors.push(`Row ${rowNum}: Pillar is required`);
+    }
+
+    // Validate pillar exists
+    if (row.pillar && row.pillar.trim()) {
+      const pillar = pillars.find(p => p.name.toLowerCase() === row.pillar.toLowerCase());
+      if (!pillar) {
+        errors.push(`Row ${rowNum}: Pillar "${row.pillar}" not found`);
+      }
+    }
+
+    // Validate managers (optional but must exist if provided)
+    if (row.engineeringManager && row.engineeringManager.trim()) {
+      const manager = teamMembers.find(m => m.email.toLowerCase() === row.engineeringManager.toLowerCase());
+      if (!manager) {
+        errors.push(`Row ${rowNum}: Engineering Manager "${row.engineeringManager}" not found`);
+      }
+    }
+
+    if (row.productManager && row.productManager.trim()) {
+      const manager = teamMembers.find(m => m.email.toLowerCase() === row.productManager.toLowerCase());
+      if (!manager) {
+        errors.push(`Row ${rowNum}: Product Manager "${row.productManager}" not found`);
+      }
+    }
+
+    if (row.deliveryLead && row.deliveryLead.trim()) {
+      const lead = teamMembers.find(m => m.email.toLowerCase() === row.deliveryLead.toLowerCase());
+      if (!lead) {
+        errors.push(`Row ${rowNum}: Delivery Lead "${row.deliveryLead}" not found`);
+      }
+    }
+  });
+
+  return errors;
+}
