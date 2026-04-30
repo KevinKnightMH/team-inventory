@@ -7,11 +7,13 @@ set -e
 PROJECT="mad-hack"
 SERVICE="team-inventory"
 REGION="us-central1"
+GOOGLE_CLIENT_ID="629681983625-p6kqfjve8bfagkkardouvifgno7gc416.apps.googleusercontent.com"
 
 echo "🚀 Deploying Team Inventory to Cloud Run..."
 echo "   Project: $PROJECT"
 echo "   Service: $SERVICE"
 echo "   Region: $REGION"
+echo "   OAuth Client: ${GOOGLE_CLIENT_ID:0:20}..."
 echo ""
 
 # Confirm project
@@ -28,6 +30,7 @@ gcloud run deploy $SERVICE \
     --region $REGION \
     --platform managed \
     --allow-unauthenticated \
+    --update-build-env-vars VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
     --project $PROJECT
 
 echo ""
