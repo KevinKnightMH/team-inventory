@@ -186,6 +186,9 @@ export default function TeamDetail() {
                   <h3 className="font-medium text-gray-900">{member.name}</h3>
                   <p className="text-sm text-gray-500 mt-1">{member.email}</p>
                   <p className="text-sm text-gray-600 mt-1 capitalize">{member.role}</p>
+                  {member.location && (
+                    <p className="text-sm text-gray-600 mt-1">{member.location}</p>
+                  )}
                 </Link>
               ))}
             </div>

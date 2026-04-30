@@ -6,7 +6,8 @@ import {
   UserPlus,
   UserMinus,
   BarChart3,
-  Briefcase
+  Briefcase,
+  Settings
 } from 'lucide-react';
 import logo from '../../assets/dopslogo.png';
 
@@ -18,11 +19,12 @@ const navItems = [
   { to: '/onboarding', icon: UserPlus, label: 'Onboarding' },
   { to: '/offboarding', icon: UserMinus, label: 'Offboarding' },
   { to: '/reports', icon: BarChart3, label: 'Reports' },
+  { to: '/admin', icon: Settings, label: 'Admin' },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-pink-50 text-gray-900 min-h-screen">
+    <aside className="fixed left-0 top-0 w-64 bg-pink-50 text-gray-900 h-screen overflow-y-auto z-10">
       <div className="p-6">
         <img src={logo} alt="DOPS Logo" className="w-full h-auto" />
       </div>

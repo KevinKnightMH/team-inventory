@@ -20,7 +20,9 @@ export function DataProvider({ children }) {
     teams: [],
     teamMembers: [],
     openRoles: [],
-    auditLogs: []
+    auditLogs: [],
+    users: [],
+    roles: []
   });
   const [loading, setLoading] = useState(true);
 
@@ -202,6 +204,68 @@ export function DataProvider({ children }) {
     return { success: true };
   };
 
+  // User operations
+  const createUser = (userData) => {
+    const newUser = dataService.createUser(data, userData);
+    dataService.logAudit(data, 'create', 'user', newUser.id, newUser.name, user, null, JSON.stringify(newUser));
+    refreshData();
+    return newUser;
+  };
+
+  const updateUser = (userId, updates) => {
+    const existingUser = data.users.find(u => u.id === userId);
+    const oldValue = JSON.stringify(existingUser);
+    const updated = dataService.updateUser(data, userId, updates);
+    const newValue = JSON.stringify(updated);
+    dataService.logAudit(data, 'update', 'user', userId, existingUser?.name || 'Unknown', user, oldValue, newValue);
+    refreshData();
+    return updated;
+  };
+
+  const deleteUser = (userId) => {
+    const existingUser = data.users.find(u => u.id === userId);
+    const oldValue = JSON.stringify(existingUser);
+    dataService.deleteUser(data, userId);
+    dataService.logAudit(data, 'delete', 'user', userId, existingUser?.name || 'Unknown', user, oldValue, null);
+    refreshData();
+    return { success: true };
+  };
+
+  // Role operations
+  const createRole = (roleData) => {
+    const newRole = dataService.createRole(data, roleData);
+    dataService.logAudit(data, 'create', 'role', newRole.id, newRole.displayName, user, null, JSON.stringify(newRole));
+    refreshData();
+    return newRole;
+  };
+
+  const updateRole = (roleId, updates) => {
+    try {
+      const existingRole = data.roles.find(r => r.id === roleId);
+      const oldValue = JSON.stringify(existingRole);
+      const updated = dataService.updateRole(data, roleId, updates);
+      const newValue = JSON.stringify(updated);
+      dataService.logAudit(data, 'update', 'role', roleId, existingRole?.displayName || 'Unknown', user, oldValue, newValue);
+      refreshData();
+      return { success: true, role: updated };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
+  const deleteRole = (roleId) => {
+    try {
+      const existingRole = data.roles.find(r => r.id === roleId);
+      const oldValue = JSON.stringify(existingRole);
+      dataService.deleteRole(data, roleId);
+      dataService.logAudit(data, 'delete', 'role', roleId, existingRole?.displayName || 'Unknown', user, oldValue, null);
+      refreshData();
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
   // Helper functions to get related data
   const getPillarById = (id) => data.pillars.find(p => p.id === id);
   const getTeamById = (id) => data.teams.find(t => t.id === id);
@@ -233,6 +297,14 @@ export function DataProvider({ children }) {
     createOpenRole,
     updateOpenRole,
     deleteOpenRole,
+    // User operations
+    createUser,
+    updateUser,
+    deleteUser,
+    // Role operations
+    createRole,
+    updateRole,
+    deleteRole,
     // Helper functions
     getPillarById,
     getTeamById,

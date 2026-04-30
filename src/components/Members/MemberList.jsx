@@ -9,7 +9,7 @@ import SearchFilter from '../Common/SearchFilter';
 import { parseCSV, validateMemberCSV } from '../../utils/exportUtils';
 
 export default function MemberList() {
-  const { data, deleteMember, getTeamById, getPillarById, createMember } = useData();
+  const { data, deleteMember, getTeamById, getPillarById, getMemberById, createMember } = useData();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
   const [filters, setFilters] = useState({
@@ -75,13 +75,26 @@ export default function MemberList() {
             }
           }
 
+          // Find reporting manager by name
+          let reportingManagerId = null;
+          if (row.reportingManager && row.reportingManager.trim()) {
+            const manager = data.teamMembers.find(m =>
+              m.name.toLowerCase() === row.reportingManager.toLowerCase()
+            );
+            if (manager) {
+              reportingManagerId = manager.id;
+            }
+          }
+
           const memberData = {
             name: row.name.trim(),
             email: row.email.trim(),
             role: row.role.toLowerCase().trim(),
             location: row.location.trim(),
+            country: row.country ? row.country.trim() : '',
             teamId: teamId,
             pillarId: pillarId,
+            reportingManagerId: reportingManagerId,
             startDate: row.startDate || new Date().toISOString().split('T')[0],
             status: (row.status || 'active').toLowerCase().trim()
           };
@@ -131,7 +144,12 @@ export default function MemberList() {
       header: 'Team',
       render: (row) => getTeamById(row.teamId)?.name || 'Unassigned'
     },
+    {
+      header: 'Reporting Manager',
+      render: (row) => getMemberById(row.reportingManagerId)?.name || '-'
+    },
     { header: 'Location', accessor: 'location' },
+    { header: 'Country', accessor: 'country' },
     {
       header: 'Status',
       render: (row) => (
@@ -215,10 +233,10 @@ export default function MemberList() {
             ))}
           </ul>
           <p className="text-sm text-red-600 mt-3">
-            CSV Format: name,email,role,location,team,startDate,status
+            CSV Format: name,email,role,location,country,team,reportingManager,startDate,status
           </p>
           <p className="text-sm text-red-600">
-            Example: John Doe,john@company.com,engineering,San Francisco,Infrastructure,2025-01-01,active
+            Example: John Doe,john@company.com,engineering,San Francisco,USA,Infrastructure,Jane Smith,2025-01-01,active
           </p>
         </div>
       )}

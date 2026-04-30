@@ -6,10 +6,11 @@ import { exportToCSV, exportToJSON } from '../../utils/exportUtils';
 import ExportData from './ExportData';
 
 export default function ReportingDashboard() {
-  const { data } = useData();
+  const { data, getMemberById } = useData();
   const [searchParams] = useSearchParams();
   const reportParam = searchParams.get('report');
   const [selectedReport, setSelectedReport] = useState(reportParam || 'members');
+  const [selectedManager, setSelectedManager] = useState('');
 
   useEffect(() => {
     if (reportParam) {
@@ -107,6 +108,23 @@ export default function ReportingDashboard() {
           user: log.userName,
           userEmail: log.userEmail
         }))
+    },
+    managerDirectReports: {
+      name: 'Manager Direct Reports',
+      description: 'View direct reports for a selected manager',
+      requiresManagerSelection: true,
+      data: selectedManager ? data.teamMembers
+        .filter(m => m.reportingManagerId === selectedManager)
+        .map(m => ({
+          name: m.name,
+          email: m.email,
+          role: m.role,
+          team: data.teams.find(t => t.id === m.teamId)?.name || 'Unassigned',
+          location: m.location,
+          country: m.country || '-',
+          status: m.status,
+          startDate: m.startDate
+        })) : []
     }
   };
 
@@ -157,6 +175,7 @@ export default function ReportingDashboard() {
             <button
               onClick={handleExportCSV}
               className="btn-primary flex items-center gap-2"
+              disabled={currentReport.data.length === 0}
             >
               <FileText className="w-4 h-4" />
               Export CSV
@@ -164,6 +183,7 @@ export default function ReportingDashboard() {
             <button
               onClick={handleExportJSON}
               className="btn-secondary flex items-center gap-2"
+              disabled={currentReport.data.length === 0}
             >
               <FileJson className="w-4 h-4" />
               Export JSON
@@ -171,8 +191,47 @@ export default function ReportingDashboard() {
           </div>
         </div>
 
+        {currentReport.requiresManagerSelection && (
+          <div className="mb-6">
+            <label htmlFor="managerSelect" className="block text-sm font-medium text-gray-700 mb-2">
+              Select Manager
+            </label>
+            <select
+              id="managerSelect"
+              value={selectedManager}
+              onChange={(e) => setSelectedManager(e.target.value)}
+              className="input-field max-w-md"
+            >
+              <option value="">Choose a manager...</option>
+              {data.teamMembers
+                .filter(m => m.status === 'active')
+                .filter(m => data.teamMembers.some(member => member.reportingManagerId === m.id))
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map(manager => (
+                  <option key={manager.id} value={manager.id}>
+                    {manager.name} ({manager.role})
+                  </option>
+                ))}
+            </select>
+            {selectedManager && (
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 className="font-semibold text-gray-900">
+                  {getMemberById(selectedManager)?.name}'s Direct Reports
+                </h4>
+                <p className="text-sm text-gray-600 mt-1">
+                  Total: {currentReport.data.length} team member{currentReport.data.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         {currentReport.data.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No data available for this report</p>
+          <p className="text-gray-500 text-center py-8">
+            {currentReport.requiresManagerSelection && !selectedManager
+              ? 'Please select a manager to view their direct reports'
+              : 'No data available for this report'}
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">

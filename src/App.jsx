@@ -13,6 +13,7 @@ import MemberDetail from './components/Members/MemberDetail';
 import OnboardingList from './components/Onboarding/OnboardingList';
 import OffboardingList from './components/Offboarding/OffboardingList';
 import ReportingDashboard from './components/Reports/ReportingDashboard';
+import AdminDashboard from './components/Admin/AdminDashboard';
 import { useAuth } from './context/AuthContext';
 
 function PrivateRoute({ children }) {
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="onboarding" element={<OnboardingList />} />
         <Route path="offboarding" element={<OffboardingList />} />
         <Route path="reports" element={<ReportingDashboard />} />
+        <Route path="admin" element={<AdminDashboard />} />
       </Route>
     </Routes>
   );

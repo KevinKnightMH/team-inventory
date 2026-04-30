@@ -1,0 +1,50 @@
+# Google Cloud Build configuration
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'VITE_GOOGLE_CLIENT_ID=${_GOOGLE_CLIENT_ID}'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/team-inventory:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/team-inventory:latest'
+      - '.'
+
+  # Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/team-inventory:$COMMIT_SHA'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/team-inventory:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'team-inventory'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/team-inventory:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/team-inventory:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/team-inventory:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Substitutions for environment variables
+substitutions:
+  _GOOGLE_CLIENT_ID: '629681983625-p6kqfjve8bfagkkardouvifgno7gc416.apps.googleusercontent.com'

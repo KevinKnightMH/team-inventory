@@ -296,6 +296,45 @@ class DataService {
       pillarId: newTeam.pillarId
     });
   }
+
+  // User operations
+  createUser(data, user) {
+    return this.create(data, user, 'users');
+  }
+
+  updateUser(data, userId, updates) {
+    return this.update(data, userId, updates, 'users');
+  }
+
+  deleteUser(data, userId) {
+    return this.delete(data, userId, 'users');
+  }
+
+  // Role operations
+  createRole(data, role) {
+    return this.create(data, { ...role, isSystem: false }, 'roles');
+  }
+
+  updateRole(data, roleId, updates) {
+    const role = data.roles.find(r => r.id === roleId);
+    if (role && role.isSystem) {
+      throw new Error('Cannot modify system roles');
+    }
+    return this.update(data, roleId, updates, 'roles');
+  }
+
+  deleteRole(data, roleId) {
+    const role = data.roles.find(r => r.id === roleId);
+    if (role && role.isSystem) {
+      throw new Error('Cannot delete system roles');
+    }
+    // Check if any users have this role
+    const usersWithRole = data.users.filter(u => u.role === role?.name);
+    if (usersWithRole.length > 0) {
+      throw new Error('Cannot delete role that is assigned to users. Reassign users first.');
+    }
+    return this.delete(data, roleId, 'roles');
+  }
 }
 
 export default new DataService();

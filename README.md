@@ -15,17 +15,20 @@ A comprehensive web application for managing organizational team structure, buil
 - **Team Member Movement**: Transfer members between teams while maintaining data integrity
 
 ### Technical Features
-- **Mock Authentication**: Role-based access with 4 predefined user accounts
+- **Google OAuth Authentication**: Secure sign-in with Google accounts
+- **Mock Authentication**: Role-based access with 4 predefined user accounts (for testing)
 - **LocalStorage Persistence**: All data persists in browser storage
 - **Real-time Updates**: Instant UI updates on all CRUD operations
 - **Responsive Design**: Mobile-friendly interface using Tailwind CSS
 - **Relationship Management**: Automatic cascade updates for team/pillar relationships
+- **Cloud Ready**: Dockerized for easy deployment to Google Cloud Run
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
+- Node.js (v20 or higher)
 - npm or yarn
+- Google Cloud account (for OAuth and deployment)
 
 ### Installation
 
@@ -39,18 +42,37 @@ A comprehensive web application for managing organizational team structure, buil
    npm install
    ```
 
-3. Start the development server:
+3. **Configure Google OAuth** (optional, for Google sign-in):
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create OAuth 2.0 credentials
+   - Copy your Client ID
+   - Create `.env` file:
+     ```bash
+     cp .env.example .env
+     ```
+   - Add your Google Client ID to `.env`:
+     ```
+     VITE_GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+     ```
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-4. Open your browser and navigate to:
+5. Open your browser and navigate to:
    ```
    http://localhost:5173
    ```
 
-## Login Credentials
+## Authentication
 
+### Google OAuth (Recommended)
+- Click "Sign in with Google" on the login page
+- Authenticate with your Google account
+- New users automatically get "viewer" role
+
+### Demo Accounts
 The application includes 4 mock user accounts for testing:
 
 | Email | Password | Role |
@@ -148,13 +170,15 @@ The application includes sample data:
 
 ## Technology Stack
 
-- **Frontend Framework**: React 18
+- **Frontend Framework**: React 19
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS
 - **Routing**: React Router v6
 - **Icons**: Lucide React
+- **Authentication**: @react-oauth/google
 - **State Management**: React Context API
 - **Data Persistence**: Browser LocalStorage
+- **Deployment**: Docker + Google Cloud Run
 
 ## Project Structure
 
@@ -179,14 +203,36 @@ src/
 └── main.jsx            # App entry point
 ```
 
-## Future Enhancements (Not in Prototype)
+## Deployment
+
+### Google Cloud Run
+
+Deploy to Google Cloud Run with automatic scaling:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
+
+See [CLOUD_RUN_DEPLOYMENT.md](./CLOUD_RUN_DEPLOYMENT.md) for detailed instructions.
+
+### Other Platforms
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for Vercel and Netlify options.
+
+## Development Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Future Enhancements
 
 - Monthly certification workflow
 - Integration with Atlassian and Okta APIs
 - Google Groups and Okta groups management
 - OKR group integration
 - Real backend with database
-- Authentication system with JWT
 - Audit logging
 - Team member history tracking
 - Advanced analytics and visualizations

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../../context/AuthContext';
 import { LogIn, Building2 } from 'lucide-react';
 
@@ -7,7 +8,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -30,6 +31,20 @@ export default function Login() {
     if (result.success) {
       navigate('/');
     }
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    setError('');
+    const result = loginWithGoogle(credentialResponse);
+    if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.error);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google sign-in failed. Please try again.');
   };
 
   return (
@@ -85,6 +100,30 @@ export default function Login() {
             Sign In
           </button>
         </form>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              text="signin_with"
+              shape="rectangular"
+              theme="outline"
+              size="large"
+              width="100%"
+            />
+          </div>
+        </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200">
           <p className="text-sm text-gray-600 mb-3 text-center">Quick login (demo accounts):</p>

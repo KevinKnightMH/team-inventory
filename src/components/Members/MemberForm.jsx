@@ -8,7 +8,9 @@ export default function MemberForm({ member, onClose }) {
     email: member?.email || '',
     role: member?.role || 'engineering',
     location: member?.location || '',
+    country: member?.country || '',
     teamId: member?.teamId || '',
+    reportingManagerId: member?.reportingManagerId || '',
     startDate: member?.startDate || new Date().toISOString().split('T')[0],
     status: member?.status || 'active'
   });
@@ -110,6 +112,23 @@ export default function MemberForm({ member, onClose }) {
         </div>
       </div>
 
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+            Country
+          </label>
+          <input
+            id="country"
+            name="country"
+            type="text"
+            value={formData.country}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
+        </div>
+      </div>
+
       <div>
         <label htmlFor="teamId" className="block text-sm font-medium text-gray-700 mb-2">
           Team
@@ -127,6 +146,28 @@ export default function MemberForm({ member, onClose }) {
               {team.name}
             </option>
           ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="reportingManagerId" className="block text-sm font-medium text-gray-700 mb-2">
+          Reporting Manager
+        </label>
+        <select
+          id="reportingManagerId"
+          name="reportingManagerId"
+          value={formData.reportingManagerId}
+          onChange={handleChange}
+          className="input-field"
+        >
+          <option value="">No Manager</option>
+          {data.teamMembers
+            .filter(m => m.id !== member?.id && m.status === 'active')
+            .map(m => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
         </select>
       </div>
 

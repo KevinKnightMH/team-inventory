@@ -41,6 +41,9 @@ const MOCK_USERS = [
   }
 ];
 
+// Default role for new Google OAuth users
+const DEFAULT_OAUTH_ROLE = 'viewer';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -74,6 +77,40 @@ export function AuthProvider({ children }) {
     return { success: false, error: 'Invalid email or password' };
   };
 
+  const loginWithGoogle = (credentialResponse) => {
+    try {
+      // Decode JWT token from Google
+      const token = credentialResponse.credential;
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+
+      const payload = JSON.parse(jsonPayload);
+
+      // Create user object from Google profile
+      const googleUser = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture,
+        role: DEFAULT_OAUTH_ROLE,
+        authProvider: 'google'
+      };
+
+      setUser(googleUser);
+      localStorage.setItem('auth-user', JSON.stringify(googleUser));
+      return { success: true, user: googleUser };
+    } catch (error) {
+      console.error('Google login error:', error);
+      return { success: false, error: 'Failed to authenticate with Google' };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('auth-user');
@@ -82,6 +119,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     login,
+    loginWithGoogle,
     logout,
     loading
   };
